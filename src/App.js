@@ -1,6 +1,8 @@
 import "./App.css";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import axios from "axios";
+import InputUI from "./components/InputUI";
+import { TextField, Typography } from "@mui/material";
 
 const initialImageURL =
   "https://pbs.twimg.com/media/GMFg3ncaAAEDUeq?format=jpg&name=small";
@@ -32,7 +34,7 @@ function App() {
 
   const handleProcessImage = () => {
     console.log(imgURL);
-    setImageURL(inputRef.current.value);
+    setImageURL(imgURL);
     processImage().then((r) => {
       console.log(r);
       setResponseData(JSON.stringify(r, null, 2));
@@ -154,34 +156,17 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Analyze image:</h1>
-      輸入一個圖片網址，然後按下 <strong>分析圖片</strong> 按鈕.
-      <br />
-      <br />
-      Image to analyze:
-      <input
-        type="text"
-        name="inputImage"
-        id="inputImage"
-        ref={inputRef}
-        value={imgURL}
-        onChange={(e) => setImageURL(e.target.value)}
+      <InputUI
+        inputRef={inputRef}
+        imgURL={imgURL}
+        setImageURL={setImageURL}
+        handleProcessImage={handleProcessImage}
+        handleProcessImageFile={handleProcessImageFile}
       />
-      <button onClick={handleProcessImage}>分析圖片</button>
-      <br />
-      <br />
-      <input
-        type="file"
-        name="uploadImage"
-        onChange={(e) => handleProcessImageFile(e.target.files[0])}
-        accept="image/*"
-      />
-      <br />
-      <br />
       <div
         id="wrapper"
         style={{
-          width: 1020,
+          width: "100%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -189,23 +174,26 @@ function App() {
           margin: "0 auto",
         }}
       >
-        <div id="jsonOutput" style={{ width: 600, display: "table-cell" }}>
+        <div id="jsonOutput" style={{ width: "100%", display: "table-cell" }}>
           Response:
           <br />
           <br />
-          <textarea
-            id="responseTextArea"
-            className="UIInput"
-            style={{ width: 580, height: 400 }}
-            value={responseData}
-          ></textarea>
+          <TextField
+            sx={{ width: "100%", marginBottom: 3 }}
+            id="filled-multiline-static"
+            label=""
+            multiline
+            rows={10}
+            defaultValue={responseData}
+            variant="filled"
+          />
         </div>
         <div id="imageDiv" style={{ width: 420, display: "table-cell" }}>
           Source image:
           <br />
           <br />
           <img id="sourceImage" width="400" alt={""} src={imgURL} />
-          <div>{caption}</div>
+          <Typography my={1} children={caption} variant="h5" gutterBottom />
           <br />
           {caption ? (
             <button onClick={processTranslate}>translate the caption</button>
